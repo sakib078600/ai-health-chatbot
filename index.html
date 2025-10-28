@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Chatbot</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <h2>🩺 Health Assistant</h2>
+        <div id="chat-box"></div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Apna sawal likho..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("user-input");
+            const chatBox = document.getElementById("chat-box");
+            const userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            chatBox.innerHTML += `<p><b>You:</b> ${userMsg}</p>`;
+            input.value = "";
+
+            const res = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userMsg })
+            });
+
+            const data = await res.json();
+            chatBox.innerHTML += `<p><b>Bot:</b> ${data.reply}</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
